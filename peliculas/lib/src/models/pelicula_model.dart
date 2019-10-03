@@ -20,6 +20,9 @@ class Peliculas{
 }
 
 class Pelicula {
+
+  String uniqueId;
+
   double popularity;
   int voteCount;
   bool video;
@@ -61,7 +64,7 @@ class Pelicula {
     adult             = json['adult'];
     backdropPath      = json['backdrop_path'];
     originalLanguage  = json['original_language'];
-    originalTitle     = json['orioriginal_title'];
+    originalTitle     = json['original_title'];
     genreIds          = json['genre_ids'].cast<int>();
     title             = json['title'];
     voteAverage       = json['vote_average'] / 1;
@@ -77,10 +80,16 @@ class Pelicula {
       }else{
         return 'https://image.tmdb.org/t/p/w500/$posterPath';
       }
-
-        
-
-
   }
+
+  getBackgroundImg(){
+
+      if ( posterPath == null ){
+        return 'https://publications.iarc.fr/uploads/media/default/0001/02/thumb_1240_default_publication.jpeg';
+
+      }else{
+        return 'https://image.tmdb.org/t/p/w500/$backdropPath';
+      }
+  }  
 
 }

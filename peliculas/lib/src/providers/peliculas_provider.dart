@@ -2,15 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:peliculas/src/models/actores_model.dart';
 import 'package:peliculas/src/models/pelicula_model.dart';
 
 class PeliculasProvider {
   String _apiVersion = '3';
-  String _apiMoviSection = 'movie';
+  String _apiMoviSection = 'movie';  
+  String _apiSearchSection = 'search';  
   String _apikey = '6e438a2eff23875035af44551b5e216f';
   String _url = 'api.themoviedb.org';
-  String _language = 'es-ES';
-  String _region = 'ES';
+  String _language = 'es-ES';  
 
   int _popularesPage = 0;
 
@@ -30,7 +31,7 @@ class PeliculasProvider {
 
   Future<List<Pelicula>> getEnCines() async {
     final url = Uri.https(_url, '$_apiVersion/$_apiMoviSection/now_playing',
-        {'api_key': _apikey, 'language': _language, 'region': _region});
+        {'api_key': _apikey, 'language': _language });
 
     return await _procesarRespuesta(url);
   }
@@ -45,8 +46,7 @@ class PeliculasProvider {
 
     final url = Uri.https(_url, '$_apiVersion/$_apiMoviSection/popular', {
       'api_key': _apikey,
-      'language': _language,
-      'region': _region,
+      'language': _language,   
       'page': _popularesPage.toString()
     });
 
@@ -62,6 +62,7 @@ class PeliculasProvider {
     
   }
 
+
   Future<List<Pelicula>> _procesarRespuesta(Uri url) async {
     final resp = await http.get(url);
 
@@ -71,4 +72,32 @@ class PeliculasProvider {
 
     return peliculas.items;
   }
+
+   Future<List<Actor>> getReparto(String peliculaId) async {
+    final url = Uri.https(_url, '$_apiVersion/$_apiMoviSection/$peliculaId/credits',
+        {'api_key': _apikey, 'language': _language });
+
+    final resp = await http.get(url);
+
+    final decodedData = json.decode(resp.body);
+
+    final reparto = new Reparto.fromJsonList(decodedData['cast']);
+
+    return reparto.actores;
+
+  }
+
+    Future<List<Pelicula>> buscarPelicula( String query ) async {
+    final url = Uri.https(_url, '$_apiVersion/$_apiSearchSection/$_apiMoviSection',
+        {'api_key': _apikey,
+         'language': _language,
+         'query' : query
+        });
+
+    return await _procesarRespuesta(url);
+  }
+
+
+
+
 }
