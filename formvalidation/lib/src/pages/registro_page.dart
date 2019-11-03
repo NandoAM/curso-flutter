@@ -3,7 +3,7 @@ import 'package:formvalidation/src/bloc/provider.dart';
 import 'package:formvalidation/src/providers/usuario_provider.dart';
 import 'package:formvalidation/src/utils/utils.dart';
 
-class LoginPage extends StatelessWidget {
+class RegistroPage extends StatelessWidget {
 
   final usuarioProvider = new UsuarioProvider();
 
@@ -93,7 +93,7 @@ class LoginPage extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Text(
-                  'Acceso',
+                  'Registro',
                   style: TextStyle(fontSize: 20.0),
                 ),
                 SizedBox(
@@ -111,10 +111,12 @@ class LoginPage extends StatelessWidget {
               ],
             ),
           ),
+
           FlatButton(
-            child: Text('Crear cuenta'),
-            onPressed: () => Navigator.pushReplacementNamed(context, 'registro'),
+            child: Text('¿Ya tienes cuenta?'),
+            onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
           ),
+          
           SizedBox(
             height: 100.0,
           )
@@ -169,30 +171,35 @@ class LoginPage extends StatelessWidget {
         return RaisedButton(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 20.0),
-            child: Text('Login'),
+            child: Text('Crear usuario'),
           ),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
           elevation: 0.0,
           color: Colors.deepPurple,
           textColor: Colors.white,
-          onPressed: snapshot.hasData ? () =>_login(context, bloc) : null,
+          onPressed: snapshot.hasData ? () =>_crearCuenta(context, bloc) : null,
         );
       },
     );
   }
 
-  _login(BuildContext context, LoginBloc bloc ) async {
+  _crearCuenta(BuildContext context, LoginBloc bloc ) async {
 
-    Map info = await usuarioProvider.login(bloc.email,bloc.password);
+    final info = await usuarioProvider.nuevoUsuario(bloc.email, bloc.password);
+    
 
     if (info ['ok']){
       Navigator.pushReplacementNamed(context, 'home');
     }else{
       mostrarAlerta(context, info['mensaje']);
     }
-      
-      
+
+
+ 
+    
+   // Navigator.pushNamed(context, 'home');
+        
 
   }
 
